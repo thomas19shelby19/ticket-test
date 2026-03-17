@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Demo Ticket</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#9fc7c3;
+margin:0;
+padding:20px;
+}
+
+.container{
+max-width:360px;
+margin:auto;
+}
+
+.card{
+background:white;
+border-radius:14px;
+padding:20px;
+box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+
+.header{
+font-weight:bold;
+font-size:18px;
+margin-bottom:10px;
+}
+
+.qr{
+text-align:center;
+margin:20px;
+}
+
+.data{
+display:flex;
+justify-content:space-between;
+}
+
+.timer{
+text-align:center;
+font-size:28px;
+color:green;
+margin-top:15px;
+}
+
+button{
+padding:10px;
+width:100%;
+margin-top:10px;
+}
+
+input{
+width:100%;
+padding:10px;
+margin-top:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div id="form" class="card">
+
+<h3>Створити демо-квиток</h3>
+
+<input id="bus" placeholder="Номер транспорту">
+
+<button onclick="createTicket()">Створити</button>
+
+</div>
+
+
+<div id="ticket" class="card" style="display:none">
+
+<div class="header">
+Демо транспортний квиток
+</div>
+
+Серія: <span id="series"></span><br>
+Транспорт: <span id="busNumber"></span>
+
+<div class="qr">
+<img id="qr" width="150">
+</div>
+
+<div class="data">
+
+<div>
+Дата<br>
+<span id="date"></span>
+</div>
+
+<div>
+Квитків<br>
+<span id="count"></span>
+</div>
+
+<div>
+Сума<br>
+<span id="sum"></span>
+</div>
+
+</div>
+
+<div class="timer" id="timer"></div>
+
+</div>
+
+</div>
+
+<script>
+
+function randomSeries(){
+return "PB"+Math.floor(Math.random()*1000000000);
+}
+
+function createTicket(){
+
+let bus=document.getElementById("bus").value || "000";
+
+document.getElementById("busNumber").innerText=bus;
+
+document.getElementById("series").innerText=randomSeries();
+
+let now=new Date();
+
+document.getElementById("date").innerText=
+now.toLocaleDateString()+" "+now.toLocaleTimeString().slice(0,5);
+
+document.getElementById("count").innerText=Math.floor(Math.random()*3)+1;
+
+document.getElementById("sum").innerText="12";
+
+let qrData="demo-ticket-"+Date.now();
+
+document.getElementById("qr").src=
+"https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="+qrData;
+
+document.getElementById("form").style.display="none";
+document.getElementById("ticket").style.display="block";
+
+startTimer();
+
+}
+
+function startTimer(){
+
+let time=3600;
+
+setInterval(()=>{
+
+time--;
+
+let m=Math.floor(time/60);
+let s=time%60;
+
+document.getElementById("timer").innerText=
+m+":"+String(s).padStart(2,"0");
+
+},1000);
+
+}
+
+</script>
+
+</body>
+</html>
