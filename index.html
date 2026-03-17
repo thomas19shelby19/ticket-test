@@ -1,79 +1,220 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
-<title>Demo Ticket</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Transport Demo Ticket</title>
 
 <style>
 
-body{
-font-family:Arial;
-background:#9fc7c3;
-margin:0;
-padding:20px;
+*{
+box-sizing:border-box;
 }
 
-.container{
-max-width:360px;
-margin:auto;
+body{
+
+margin:0;
+
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+
+background:#9fc7c3;
+
+display:flex;
+
+justify-content:center;
+
+}
+
+.app{
+
+width:100%;
+
+max-width:390px;
+
+min-height:100vh;
+
+padding:20px;
+
+display:flex;
+
+align-items:flex-start;
+
+justify-content:center;
+
 }
 
 .card{
+
+width:100%;
+
 background:white;
-border-radius:14px;
-padding:20px;
-box-shadow:0 4px 12px rgba(0,0,0,0.2);
+
+border-radius:20px;
+
+padding:22px;
+
+box-shadow:0 8px 25px rgba(0,0,0,0.15);
+
 }
 
 .header{
-font-weight:bold;
-font-size:18px;
-margin-bottom:10px;
+
+font-size:20px;
+
+font-weight:600;
+
+margin-bottom:12px;
+
+/* змінений колір щоб не було 1:1 */
+
+color:#1b4f72;
+
+}
+
+.info{
+
+font-size:14px;
+
+line-height:1.6;
+
 }
 
 .qr{
-text-align:center;
-margin:20px;
+
+display:flex;
+
+justify-content:center;
+
+margin:22px 0;
+
+}
+
+.qr img{
+
+width:170px;
+
+height:170px;
+
 }
 
 .data{
+
 display:flex;
+
 justify-content:space-between;
+
+text-align:center;
+
+margin-top:6px;
+
+}
+
+.data div{
+
+flex:1;
+
+}
+
+.label{
+
+font-size:13px;
+
+color:#777;
+
+}
+
+.value{
+
+font-size:16px;
+
+margin-top:4px;
+
 }
 
 .timer{
-text-align:center;
-font-size:28px;
-color:green;
-margin-top:15px;
-}
 
-button{
-padding:10px;
-width:100%;
-margin-top:10px;
+margin-top:26px;
+
+text-align:center;
+
+font-size:36px;
+
+font-weight:700;
+
+color:#2e7d32;
+
 }
 
 input{
+
 width:100%;
-padding:10px;
-margin-top:10px;
+
+padding:12px;
+
+font-size:16px;
+
+margin-top:12px;
+
+border-radius:10px;
+
+border:1px solid #ccc;
+
+}
+
+button{
+
+width:100%;
+
+padding:14px;
+
+font-size:16px;
+
+border-radius:12px;
+
+border:none;
+
+margin-top:12px;
+
+background:#2e7d32;
+
+color:white;
+
+font-weight:600;
+
+}
+
+button:active{
+
+opacity:0.85;
+
 }
 
 </style>
+
 </head>
 
 <body>
 
-<div class="container">
+<div class="app">
 
 <div id="form" class="card">
 
-<h3>Створити демо-квиток</h3>
+<div class="header">
+
+Створити демонстраційний квиток
+
+</div>
 
 <input id="bus" placeholder="Номер транспорту">
 
-<button onclick="createTicket()">Створити</button>
+<button onclick="createTicket()">
+
+Створити квиток
+
+</button>
 
 </div>
 
@@ -81,47 +222,72 @@ margin-top:10px;
 <div id="ticket" class="card" style="display:none">
 
 <div class="header">
-Демо транспортний квиток
+
+Демонстраційний транспортний квиток
+
 </div>
 
+<div class="info">
+
 Серія: <span id="series"></span><br>
+
 Транспорт: <span id="busNumber"></span>
 
+</div>
+
 <div class="qr">
-<img id="qr" width="150">
+
+<img id="qr">
+
 </div>
 
 <div class="data">
 
 <div>
-Дата<br>
-<span id="date"></span>
+
+<div class="label">Дата</div>
+
+<div id="date" class="value"></div>
+
 </div>
 
 <div>
-Квитків<br>
-<span id="count"></span>
+
+<div class="label">Квитків</div>
+
+<div id="count" class="value"></div>
+
 </div>
 
 <div>
-Сума<br>
-<span id="sum"></span>
-</div>
 
-</div>
+<div class="label">Сума</div>
 
-<div class="timer" id="timer"></div>
-
-<button onclick="resetTicket()">Новий квиток</button>
+<div id="sum" class="value"></div>
 
 </div>
 
 </div>
+
+<div id="timer" class="timer"></div>
+
+<button onclick="resetTicket()">
+
+Новий квиток
+
+</button>
+
+</div>
+
+</div>
+
 
 <script>
 
 function randomSeries(){
+
 return "PB"+Math.floor(Math.random()*1000000000);
+
 }
 
 function createTicket(){
@@ -129,9 +295,13 @@ function createTicket(){
 let bus=document.getElementById("bus").value || "000";
 
 let ticket={
+
 bus:bus,
+
 series:randomSeries(),
+
 created:Date.now()
+
 };
 
 localStorage.setItem("ticketData",JSON.stringify(ticket));
@@ -143,23 +313,25 @@ renderTicket(ticket);
 function renderTicket(ticket){
 
 document.getElementById("busNumber").innerText=ticket.bus;
+
 document.getElementById("series").innerText=ticket.series;
 
 let date=new Date(ticket.created);
 
 document.getElementById("date").innerText=
+
 date.toLocaleDateString()+" "+date.toLocaleTimeString().slice(0,5);
 
 document.getElementById("count").innerText=Math.floor(Math.random()*3)+1;
 
 document.getElementById("sum").innerText="12";
 
-let qrData="demo-ticket-"+ticket.series;
-
 document.getElementById("qr").src=
-"https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="+qrData;
+
+"https://api.qrserver.com/v1/create-qr-code/?size=170x170&data="+ticket.series;
 
 document.getElementById("form").style.display="none";
+
 document.getElementById("ticket").style.display="block";
 
 startTimer(ticket.created);
@@ -181,9 +353,11 @@ let left=duration-passed;
 if(left<0) left=0;
 
 let m=Math.floor(left/60);
+
 let s=left%60;
 
 document.getElementById("timer").innerText=
+
 m+":"+String(s).padStart(2,"0");
 
 },1000);
