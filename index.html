@@ -112,6 +112,8 @@ margin-top:10px;
 
 <div class="timer" id="timer"></div>
 
+<button onclick="resetTicket()">Новий квиток</button>
+
 </div>
 
 </div>
@@ -126,20 +128,33 @@ function createTicket(){
 
 let bus=document.getElementById("bus").value || "000";
 
-document.getElementById("busNumber").innerText=bus;
+let ticket={
+bus:bus,
+series:randomSeries(),
+created:Date.now()
+};
 
-document.getElementById("series").innerText=randomSeries();
+localStorage.setItem("ticketData",JSON.stringify(ticket));
 
-let now=new Date();
+renderTicket(ticket);
+
+}
+
+function renderTicket(ticket){
+
+document.getElementById("busNumber").innerText=ticket.bus;
+document.getElementById("series").innerText=ticket.series;
+
+let date=new Date(ticket.created);
 
 document.getElementById("date").innerText=
-now.toLocaleDateString()+" "+now.toLocaleTimeString().slice(0,5);
+date.toLocaleDateString()+" "+date.toLocaleTimeString().slice(0,5);
 
 document.getElementById("count").innerText=Math.floor(Math.random()*3)+1;
 
 document.getElementById("sum").innerText="12";
 
-let qrData="demo-ticket-"+Date.now();
+let qrData="demo-ticket-"+ticket.series;
 
 document.getElementById("qr").src=
 "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="+qrData;
@@ -147,25 +162,49 @@ document.getElementById("qr").src=
 document.getElementById("form").style.display="none";
 document.getElementById("ticket").style.display="block";
 
-startTimer();
+startTimer(ticket.created);
 
 }
 
-function startTimer(){
+function startTimer(created){
 
-let time=3600;
+let duration=3600;
 
 setInterval(()=>{
 
-time--;
+let now=Date.now();
 
-let m=Math.floor(time/60);
-let s=time%60;
+let passed=Math.floor((now-created)/1000);
+
+let left=duration-passed;
+
+if(left<0) left=0;
+
+let m=Math.floor(left/60);
+let s=left%60;
 
 document.getElementById("timer").innerText=
 m+":"+String(s).padStart(2,"0");
 
 },1000);
+
+}
+
+function resetTicket(){
+
+localStorage.removeItem("ticketData");
+
+location.reload();
+
+}
+
+let saved=localStorage.getItem("ticketData");
+
+if(saved){
+
+let ticket=JSON.parse(saved);
+
+renderTicket(ticket);
 
 }
 
